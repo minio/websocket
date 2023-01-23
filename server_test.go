@@ -104,7 +104,8 @@ func TestBufioReuse(t *testing.T) {
 				"Connection":            []string{"upgrade"},
 				"Sec-Websocket-Key":     []string{"dGhlIHNhbXBsZSBub25jZQ=="},
 				"Sec-Websocket-Version": []string{"13"},
-			}}, nil)
+			},
+		}, nil)
 		if err != nil {
 			t.Fatal(err)
 		}

@@ -79,26 +79,34 @@ var parseExtensionTests = []struct {
 	{`foo`, []map[string]string{{"": "foo"}}},
 	{`foo, bar; baz=2`, []map[string]string{
 		{"": "foo"},
-		{"": "bar", "baz": "2"}}},
+		{"": "bar", "baz": "2"},
+	}},
 	{`foo; bar="b,a;z"`, []map[string]string{
-		{"": "foo", "bar": "b,a;z"}}},
+		{"": "foo", "bar": "b,a;z"},
+	}},
 	{`foo , bar; baz = 2`, []map[string]string{
 		{"": "foo"},
-		{"": "bar", "baz": "2"}}},
+		{"": "bar", "baz": "2"},
+	}},
 	{`foo, bar; baz=2 junk`, []map[string]string{
-		{"": "foo"}}},
+		{"": "foo"},
+	}},
 	{`foo junk, bar; baz=2 junk`, nil},
 	{`mux; max-channels=4; flow-control, deflate-stream`, []map[string]string{
 		{"": "mux", "max-channels": "4", "flow-control": ""},
-		{"": "deflate-stream"}}},
+		{"": "deflate-stream"},
+	}},
 	{`permessage-foo; x="10"`, []map[string]string{
-		{"": "permessage-foo", "x": "10"}}},
+		{"": "permessage-foo", "x": "10"},
+	}},
 	{`permessage-foo; use_y, permessage-foo`, []map[string]string{
 		{"": "permessage-foo", "use_y": ""},
-		{"": "permessage-foo"}}},
+		{"": "permessage-foo"},
+	}},
 	{`permessage-deflate; client_max_window_bits; server_max_window_bits=10 , permessage-deflate; client_max_window_bits`, []map[string]string{
 		{"": "permessage-deflate", "client_max_window_bits": "", "server_max_window_bits": "10"},
-		{"": "permessage-deflate", "client_max_window_bits": ""}}},
+		{"": "permessage-deflate", "client_max_window_bits": ""},
+	}},
 	{"permessage-deflate; server_no_context_takeover; client_max_window_bits=15", []map[string]string{
 		{"": "permessage-deflate", "server_no_context_takeover": "", "client_max_window_bits": "15"},
 	}},
