@@ -149,7 +149,6 @@ func sendRecv(t *testing.T, ws *Conn) {
 }
 
 func TestProxyDial(t *testing.T) {
-
 	s := newServer(t)
 	defer s.Close()
 
@@ -255,7 +254,7 @@ func TestDialCookieJar(t *testing.T) {
 		u.Scheme = "https"
 	}
 
-	cookies := []*http.Cookie{{Name: "gorilla", Value: "ws", Path: "/"}}
+	cookies := []*http.Cookie{{Name: "minio", Value: "ws", Path: "/"}}
 	d.Jar.SetCookies(u, cookies)
 
 	ws, _, err := d.Dial(s.URL, nil)
@@ -264,18 +263,18 @@ func TestDialCookieJar(t *testing.T) {
 	}
 	defer ws.Close()
 
-	var gorilla string
+	var minio string
 	var sessionID string
 	for _, c := range d.Jar.Cookies(u) {
-		if c.Name == "gorilla" {
-			gorilla = c.Value
+		if c.Name == "minio" {
+			minio = c.Value
 		}
 
 		if c.Name == "sessionID" {
 			sessionID = c.Value
 		}
 	}
-	if gorilla != "ws" {
+	if minio != "ws" {
 		t.Error("Cookie not present in jar.")
 	}
 
@@ -439,11 +438,13 @@ func TestDialBadHeader(t *testing.T) {
 	s := newServer(t)
 	defer s.Close()
 
-	for _, k := range []string{"Upgrade",
+	for _, k := range []string{
+		"Upgrade",
 		"Connection",
 		"Sec-Websocket-Key",
 		"Sec-Websocket-Version",
-		"Sec-Websocket-Protocol"} {
+		"Sec-Websocket-Protocol",
+	} {
 		h := http.Header{}
 		h.Set(k, "bad")
 		ws, _, err := cstDialer.Dial(s.URL, http.Header{"Origin": {"bad"}})
@@ -570,7 +571,6 @@ func (w testLogWriter) Write(p []byte) (int, error) {
 
 // TestHost tests handling of host names and confirms that it matches net/http.
 func TestHost(t *testing.T) {
-
 	upgrader := Upgrader{}
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if IsWebSocketUpgrade(r) {
@@ -844,7 +844,6 @@ func TestSocksProxyDial(t *testing.T) {
 }
 
 func TestTracingDialWithContext(t *testing.T) {
-
 	var headersWrote, requestWrote, getConn, gotConn, connectDone, gotFirstResponseByte bool
 	trace := &httptrace.ClientTrace{
 		WroteHeaders: func() {
@@ -903,7 +902,6 @@ func TestTracingDialWithContext(t *testing.T) {
 }
 
 func TestEmptyTracingDialWithContext(t *testing.T) {
-
 	trace := &httptrace.ClientTrace{}
 	ctx := httptrace.WithClientTrace(context.Background(), trace)
 
@@ -924,7 +922,6 @@ func TestEmptyTracingDialWithContext(t *testing.T) {
 
 // TestNetDialConnect tests selection of dial method between NetDial, NetDialContext, NetDialTLS or NetDialTLSContext
 func TestNetDialConnect(t *testing.T) {
-
 	upgrader := Upgrader{}
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if IsWebSocketUpgrade(r) {
@@ -964,7 +961,6 @@ func TestNetDialConnect(t *testing.T) {
 		netDialTLSContext func(ctx context.Context, network, addr string) (net.Conn, error)
 		tlsClientConfig   *tls.Config
 	}{
-
 		{
 			name:   "HTTP server, all NetDial* defined, shall use NetDialContext",
 			server: server,
@@ -1098,6 +1094,7 @@ func TestNetDialConnect(t *testing.T) {
 		}
 	}
 }
+
 func TestNextProtos(t *testing.T) {
 	ts := httptest.NewUnstartedServer(
 		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}),
@@ -1118,7 +1115,7 @@ func TestNextProtos(t *testing.T) {
 
 	// Asserts that Dialer.TLSClientConfig.NextProtos contains "h2"
 	// after the Client.Get call from net/http above.
-	var containsHTTP2 bool = false
+	var containsHTTP2 bool
 	for _, proto := range d.TLSClientConfig.NextProtos {
 		if proto == "h2" {
 			containsHTTP2 = true
